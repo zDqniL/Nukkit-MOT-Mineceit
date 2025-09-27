@@ -4776,7 +4776,7 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
                                 }
 
                                 if (item.onClickAir(this, directionVector)) {
-                                    if (this.isSurvival() || this.isAdventure()) {
+                                    if (this.isSurvival() || this.isAdventure() || this.isSpectator()) {
                                         if (item.getId() == 0 || this.inventory.getItemInHandFast().getId() == item.getId()) {
                                             this.inventory.setItemInHand(item);
                                         } else {
@@ -5908,7 +5908,7 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
             if (!ev.getKeepInventory() && this.level.getGameRules().getBoolean(GameRule.DO_ENTITY_DROPS)) {
                 for (Item item : ev.getDrops()) {
                     if (!item.hasEnchantment(Enchantment.ID_VANISHING_CURSE)) {
-                        this.level.dropItem(this, item, null, true, 40);
+                        this.level.dropItem(this, item, null, false, 30);
                     }
                 }
 
@@ -7783,13 +7783,10 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
      * @return can eat
      */
     public boolean canEat(boolean update) {
-        if (this.foodData.getLevel() < this.foodData.getMaxLevel() || this.isCreative() || this.server.getDifficulty() == 0) {
-            return true;
-        }
         if (update) {
             this.needSendFoodLevel = true;
         }
-        return false;
+        return foodData.getLevel() < foodData.getMaxLevel() || isCreative() || server.getDifficulty() == 0;
     }
 
     public void setLockCameraInput(boolean lockCameraInput) {

@@ -21,27 +21,27 @@ public class EntitySnowball extends EntityProjectile {
 
     @Override
     public float getWidth() {
-        return 0.25f;
+        return 0.20f;
     }
 
     @Override
     public float getLength() {
-        return 0.25f;
+        return 0.20f;
     }
 
     @Override
     public float getHeight() {
-        return 0.25f;
+        return 0.200f;
     }
 
     @Override
     protected float getGravity() {
-        return 0.03f;
+        return 0.027f;
     }
 
     @Override
     protected float getDrag() {
-        return 0.01f;
+        return 0.011f;
     }
 
     public EntitySnowball(FullChunk chunk, CompoundTag nbt) {
@@ -60,11 +60,6 @@ public class EntitySnowball extends EntityProjectile {
 
         boolean hasUpdate = super.onUpdate(currentTick);
 
-        if (this.age > 1200 || this.isCollided || this.hadCollision) {
-            this.kill();
-            hasUpdate = true;
-        }
-
         return hasUpdate;
     }
 
@@ -72,5 +67,7 @@ public class EntitySnowball extends EntityProjectile {
     public void onHit() {
         ItemSnowball snowball = new ItemSnowball();
         level.addParticle(new ItemBreakParticle(this, snowball), null, 5);
+
+        this.kill();
     }
 }

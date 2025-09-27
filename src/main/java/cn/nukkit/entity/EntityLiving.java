@@ -116,10 +116,16 @@ public abstract class EntityLiving extends Entity implements EntityDamageable {
     public boolean attack(EntityDamageEvent source) {
         if (this.noDamageTicks > 0) {
             return false;
-        } else if (this.attackTime > 0) {
-            EntityDamageEvent lastCause = this.getLastDamageCause();
-            if (lastCause != null && lastCause.getDamage() >= source.getDamage()) {
+        }
+        EntityDamageEvent lastCause = getLastDamageCause();
+
+        if (lastCause != null && this.attackTime > 0) {
+            if (lastCause.getDamage() >= source.getDamage()) {
                 return false;
+            }
+
+            if (lastCause.getDamage() >= 0) {
+                source.setCancelled(true);
             }
         }
 
@@ -135,7 +141,7 @@ public abstract class EntityLiving extends Entity implements EntityDamageable {
                 }
 
                 // Critical hit
-                if (damager instanceof Player && !damager.onGround) {
+                if (damager instanceof Player && !damager.onGround && !damager.isSprinting() && !isInsideOfWater()) {
                     AnimatePacket animate = new AnimatePacket();
                     animate.action = AnimatePacket.Action.CRITICAL_HIT;
                     animate.eid = getId();
