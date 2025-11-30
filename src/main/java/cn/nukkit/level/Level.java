@@ -235,7 +235,7 @@ public class Level implements ChunkManager, Metadatable {
     private final Long2ObjectNonBlockingMap<Player> players = new Long2ObjectNonBlockingMap<>();
 
     @NonComputationAtomic
-    public final Long2ObjectNonBlockingMap<Entity> entities = new Long2ObjectNonBlockingMap<>();
+    private final Long2ObjectNonBlockingMap<Entity> entities = new Long2ObjectNonBlockingMap<>();
 
     private final ConcurrentLinkedQueue<BlockEntity> updateBlockEntities = new ConcurrentLinkedQueue<>();
 
@@ -2658,16 +2658,16 @@ public class Level implements ChunkManager, Metadatable {
         }
     }
 
-    public Item useItemOn(Vector3 vector, Item item, BlockFace face, float fx, float fy, float fz) {
+    public Item useItemOn(@NotNull Vector3 vector, @NotNull Item item, @NotNull BlockFace face, float fx, float fy, float fz) {
         return this.useItemOn(vector, item, face, fx, fy, fz, null);
     }
 
-    public Item useItemOn(Vector3 vector, Item item, BlockFace face, float fx, float fy, float fz, Player player) {
+    public Item useItemOn(@NotNull Vector3 vector, @NotNull Item item, @NotNull BlockFace face, float fx, float fy, float fz, @Nullable Player player) {
         return this.useItemOn(vector, item, face, fx, fy, fz, player, true);
     }
 
     @SuppressWarnings("unchecked")
-    public Item useItemOn(Vector3 vector, Item item, BlockFace face, float fx, float fy, float fz, Player player, boolean playSound) {
+    public Item useItemOn(@NotNull Vector3 vector, @NotNull Item item, @NotNull BlockFace face, float fx, float fy, float fz, @Nullable Player player, boolean playSound) {
         Block target = this.getBlock(vector);
         Block block = target.getSide(face);
 
@@ -5177,7 +5177,9 @@ public class Level implements ChunkManager, Metadatable {
             }
             return GameVersion.V1_20_50_NETEASE;
         }
-        if (protocol >= GameVersion.V1_21_100.getProtocol()) {
+        if (protocol >= GameVersion.V1_21_110_26.getProtocol()) {
+            return GameVersion.V1_21_110;
+        } else if (protocol >= GameVersion.V1_21_100.getProtocol()) {
             return GameVersion.V1_21_100;
         } else if (protocol >= ProtocolInfo.v1_21_90) {
             return GameVersion.V1_21_90;
@@ -5323,7 +5325,8 @@ public class Level implements ChunkManager, Metadatable {
         if (chunk == ProtocolInfo.v1_21_80) if (player == ProtocolInfo.v1_21_80) return true;
         if (chunk == ProtocolInfo.v1_21_90)
             if (player >= ProtocolInfo.v1_21_90) if (player <= ProtocolInfo.v1_21_93) return true;
-        if (chunk == GameVersion.V1_21_100.getProtocol()) if (player >= GameVersion.V1_21_100.getProtocol()) return true;
+        if (chunk == GameVersion.V1_21_100.getProtocol()) if (player == GameVersion.V1_21_100.getProtocol()) return true;
+        if (chunk == GameVersion.V1_21_110.getProtocol()) if (player >= GameVersion.V1_21_110_26.getProtocol()) return true;
         return false; //TODO Multiversion  Remember to update when block palette changes
     }
 
